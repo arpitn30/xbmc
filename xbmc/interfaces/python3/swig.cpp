@@ -74,7 +74,7 @@ namespace PythonBindings
     }
     else    // If pobject is of type Bytes
     {
-      buf = PyUnicode_AsUTF8(PyUnicode_Decode(pObject));
+      buf = PyUnicode_AsUTF8(pObject);
       return;
     }
 
