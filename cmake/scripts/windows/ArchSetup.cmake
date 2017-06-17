@@ -24,11 +24,7 @@ list(APPEND CMAKE_SYSTEM_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependenc
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH})
 list(APPEND CMAKE_SYSTEM_PREFIX_PATH ${CMAKE_SOURCE_DIR}/project/BuildDependencies)
 
-if(${ARCH} STREQUAL win32)
-  set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/Win32/include/python)
-else()
-  set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH}/include/python)
-endif()
+set(PYTHON_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/project/BuildDependencies/${ARCH}/include/python3.6)
 
 
 # -------- Compiler options ---------
