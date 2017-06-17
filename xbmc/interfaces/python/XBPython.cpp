@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2017 Team Kodi
+ *      http://www.kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -192,7 +192,7 @@ void XBPython::OnPlayBackSpeedChanged(int iSpeed)
 }
 
 // message all registered callbacks that player is seeking
-void XBPython::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
+void XBPython::OnPlayBackSeek(int iTime, int seekOffset)
 {
   XBMC_TRACE;
   LOCK_AND_COPY(std::vector<PVOID>,tmp,m_vecPlayerCallbackList);
@@ -606,7 +606,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // would not do that in that case.
     PyEval_AcquireLock();
     char* python_argv[1] = { (char*)"" };
-    PySys_SetArgv(1, python_argv);
+    PySys_SetArgv(1, (wchar_t **)python_argv);
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");

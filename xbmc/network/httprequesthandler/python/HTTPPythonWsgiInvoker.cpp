@@ -146,7 +146,7 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
   // get the script
   std::string scriptName = URIUtils::GetFileName(script);
   URIUtils::RemoveExtension(scriptName);
-  pyScript = PyString_FromStringAndSize(scriptName.c_str(), scriptName.size());
+  pyScript = PyUnicode_FromStringAndSize(scriptName.c_str(), scriptName.size());
   if (pyScript == NULL)
   {
     CLog::Log(LOGERROR, "CHTTPPythonWsgiInvoker: failed to convert script \"%s\" to python string", script.c_str());
@@ -199,7 +199,7 @@ void CHTTPPythonWsgiInvoker::executeScript(void *fp, const std::string &script, 
     pyEnviron = PyDict_New();
     for (std::map<std::string, std::string>::const_iterator cgiEnv = cgiEnvironment.begin(); cgiEnv != cgiEnvironment.end(); ++cgiEnv)
     {
-      PyObject* pyEnvEntry = PyString_FromStringAndSize(cgiEnv->second.c_str(), cgiEnv->second.size());
+      PyObject* pyEnvEntry = PyUnicode_FromStringAndSize(cgiEnv->second.c_str(), cgiEnv->second.size());
       PyDict_SetItemString(pyEnviron, cgiEnv->first.c_str(), pyEnvEntry);
       Py_DECREF(pyEnvEntry);
     }
@@ -406,7 +406,7 @@ void CHTTPPythonWsgiInvoker::addWsgiEnvironment(HTTPPythonRequest* request, void
   }
   {
     // wsgi.url_scheme
-    PyObject* pyValue = PyString_FromStringAndSize("http", 4);
+    PyObject* pyValue = PyUnicode_FromStringAndSize("http", 4);
     PyDict_SetItemString(pyEnviron, "wsgi.url_scheme", pyValue);
     Py_DECREF(pyValue);
   }

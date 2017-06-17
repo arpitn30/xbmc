@@ -3,7 +3,7 @@
 @@ -156,6 +156,16 @@
  
          _add_directory(include_dirs, "libImaging")
- 
+
 +        compiler = os.environ.get('CC')
 +        args = {}
 +        # unfortunately, distutils doesn't let us provide separate C and C++
@@ -16,22 +16,22 @@
 +
          #
          # add configured kits
- 
+
 @@ -187,10 +196,11 @@
                  for d in os.environ[k].split(os.path.pathsep):
                      _add_directory(library_dirs, d)
- 
+
 -        prefix = sysconfig.get_config_var("prefix")
 +        prefix = os.environ.get('PYTHONXCPREFIX')
          if prefix:
              _add_directory(library_dirs, os.path.join(prefix, "lib"))
              _add_directory(include_dirs, os.path.join(prefix, "include"))
-+            _add_directory(include_dirs, os.path.join(prefix, "include/python2.7"))
- 
++            _add_directory(include_dirs, os.path.join(prefix, "Win32/include/python"))
+
          #
          # add platform directories
 @@ -202,14 +212,14 @@
- 
+
          elif sys.platform == "darwin":
              # attempt to make sure we pick freetype2 over other versions
 -            _add_directory(include_dirs, "/sw/include/freetype2")
@@ -48,7 +48,7 @@
 -            _add_directory(include_dirs, "/opt/local/include")
 +            #_add_directory(library_dirs, "/opt/local/lib")
 +            #_add_directory(include_dirs, "/opt/local/include")
- 
+
              # if Homebrew is installed, use its lib and include directories
              import subprocess
 @@ -234,15 +244,15 @@
@@ -63,7 +63,7 @@
 -                _add_directory(include_dirs, "/usr/X11/include")
 +                #_add_directory(library_dirs, "/usr/X11/lib")
 +                #_add_directory(include_dirs, "/usr/X11/include")
- 
+
          elif sys.platform.startswith("linux"):
              arch_tp = (plat.processor(), plat.architecture()[0])
 -            if arch_tp == ("x86_64", "32bit"):
@@ -73,7 +73,7 @@
              else:
 @@ -252,43 +262,43 @@
                          continue
- 
+
                      if platform_ in ["x86_64", "64bit"]:
 -                        _add_directory(library_dirs, "/lib64")
 -                        _add_directory(library_dirs, "/usr/lib64")
@@ -144,12 +144,12 @@
              # work ;-)
 -            self.add_multiarch_paths()
 +            #self.add_multiarch_paths()
- 
+
 -        elif sys.platform.startswith("gnu"):
 -            self.add_multiarch_paths()
 +        #elif sys.platform.startswith("gnu"):
 +        #    self.add_multiarch_paths()
- 
+
 -        elif sys.platform.startswith("netbsd"):
 -            _add_directory(library_dirs, "/usr/pkg/lib")
 -            _add_directory(include_dirs, "/usr/pkg/include")
@@ -164,28 +164,28 @@
 +        #elif sys.platform.startswith("sunos5"):
 +                    #_add_directory(library_dirs, "/opt/local/lib")
 +                    #_add_directory(include_dirs, "/opt/local/include")
- 
+
          # FIXME: check /opt/stuff directories here?
- 
+
 @@ -350,11 +360,11 @@
                  _add_directory(include_dirs, tcl_dir)
- 
+
          # standard locations
 -        _add_directory(library_dirs, "/usr/local/lib")
 -        _add_directory(include_dirs, "/usr/local/include")
 +        #_add_directory(library_dirs, "/usr/local/lib")
 +        #_add_directory(include_dirs, "/usr/local/include")
- 
+
 -        _add_directory(library_dirs, "/usr/lib")
 -        _add_directory(include_dirs, "/usr/include")
 +        #_add_directory(library_dirs, "/usr/lib")
 +        #_add_directory(include_dirs, "/usr/include")
- 
+
          # on Windows, look for the OpenJPEG libraries in the location that
          # the official installer puts them
 @@ -389,12 +399,7 @@
          feature = self.feature
- 
+
          if feature.want('zlib'):
 -            if _find_include_file(self, "zlib.h"):
 -                if _find_library_file(self, "z"):
@@ -194,15 +194,15 @@
 -                        _find_library_file(self, "zlib")):
 -                    feature.zlib = "zlib"  # alternative name
 +            feature.zlib = "z"
- 
+
          if feature.want('jpeg'):
              if _find_include_file(self, "jpeglib.h"):
 @@ -552,7 +557,7 @@
- 
+
          if feature.freetype:
              exts.append(Extension(
 -                "PIL._imagingft", ["_imagingft.c"], libraries=["freetype"]))
 +                "PIL._imagingft", ["_imagingft.c"], libraries=["freetype", "bz2", "z"]))
- 
+
          if os.path.isfile("_imagingtiff.c") and feature.tiff:
              exts.append(Extension(

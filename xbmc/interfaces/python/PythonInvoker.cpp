@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -22,6 +22,7 @@
 #include <Python.h>
 #include <iterator>
 #include <osdefs.h>
+#include <fileshim.h>
 
 #include "system.h"
 #include "PythonInvoker.h"
@@ -112,7 +113,7 @@ static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std:
 static std::vector<char *> getCPointersToArguments(std::vector<std::vector<char>> & input)
 {
   std::vector<char *> output;
-  std::transform(input.begin(), input.end(), std::back_inserter(output), 
+  std::transform(input.begin(), input.end(), std::back_inserter(output),
                 [](std::vector<char> & i) { return &i[0]; });
   return output;
 }
@@ -228,17 +229,17 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     for (int i = 0; i < PyList_Size(pathObj); i++)
     {
       PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-      if (e != NULL && PyString_Check(e))
-        addNativePath(PyString_AsString(e)); // returns internal data, don't delete or modify
+      if (e != NULL && PyUnicode_Check(e))
+        addNativePath(PyUnicode_AsUTF8(e)); // returns internal data, don't delete or modify
     }
   }
   else
-    addNativePath(Py_GetPath());
+    addNativePath((char *)Py_GetPath());
 
   Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
-  PySys_SetArgv(argc, &argv[0]);
+  PySys_SetArgv(argc, (wchar_t **)(&argv[0]));
 
 #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
@@ -247,7 +248,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 #else // ! TARGET_WINDOWS
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
 #endif // ! TARGET_WINDOWS
-  PySys_SetPath((char *)m_pythonPath.c_str());
+  PySys_SetPath((wchar_t *)m_pythonPath.c_str());
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(), m_sourceFile.c_str(), scriptDir.c_str());
   PyObject* module = PyImport_AddModule((char*)"__main__");
@@ -285,12 +286,17 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         return false;
       }
 #endif
-      PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
-      FILE *fp = PyFile_AsFile(file);
+    //   PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
+    //   FILE *fp = PyFile_AsFile(file);
+    PyObject *ioMod, *openedFile;
+    ioMod = PyImport_ImportModule("io");
+    openedFile = PyObject_CallMethod(ioMod, "open", "ss", (char *)nativeFilename.c_str(), "r");
+    Py_DECREF(ioMod);
+    FILE *fp = py3c_PyFile_AsFileWithMode(openedFile, (char *)"r");
 
       if (fp != NULL)
       {
-        PyObject *f = PyString_FromString(nativeFilename.c_str());
+        PyObject *f = PyUnicode_FromString(nativeFilename.c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
 
         onPythonModuleInitialization(moduleDict);
@@ -572,11 +578,11 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 
   PyObject *moduleDictionary = (PyObject *)moduleDict;
 
-  PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
+  PyObject *pyaddonid = PyUnicode_FromString(m_addon->ID().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
 
   ADDON::AddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
-  PyObject *pyxbmcapiversion = PyString_FromString(version.asString().c_str());
+  PyObject *pyxbmcapiversion = PyUnicode_FromString(version.asString().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
   PyObject *pyinvokerid = PyLong_FromLong(GetId());
