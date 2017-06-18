@@ -273,7 +273,7 @@ void doMethod(Node method, MethodType methodType)
 
     return result; <% }
     else { %>
-    self->ob_type->tp_free((PyObject*)self);
+    (((PyObject*)(self))->ob_type)->tp_free((PyObject*)self);
     <%
     }
     %>
@@ -664,9 +664,10 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     pythonType.tp_name = (char*)"${module.@name}.${clazz.@sym_name}";
     pythonType.tp_basicsize = sizeof(PyHolder);
     pythonType.tp_dealloc = (destructor)${module.@name}_${classNameAsVariable}_Dealloc; <%
-  if (doComparator) { %>
-    pythonType.tp_compare=${module.@name}_${classNameAsVariable}_cmp;<%
-  }
+  // Python 2 code, remove if works without it
+  // if (doComparator) { %>
+  //   pythonType.tp_compare=${module.@name}_${classNameAsVariable}_cmp;<%
+  // }
   if (clazz.@feature_python_rcmp) { %>
     pythonType.tp_richcompare=(richcmpfunc)${module.@name}_${classNameAsVariable}_rcmp;<%
   } %>
@@ -931,8 +932,15 @@ namespace PythonBindings
 <% classNameAsVariables.each { %>
     Py_INCREF(&(Ty${it}_Type.pythonType));<%
    }%>
-
-    module = Py_InitModule((char*)"${module.@name}", ${module.@name}_methods);
+    static struct PyModuleDef nameAsVariable
+    {
+        PyModuleDef_HEAD_INIT,
+        (char*)"${module.@name}",
+        "",
+        -1,
+        ${module.@name}_methods
+    };
+    module = PyModule_Create(&nameAsVariable);
     if (module == NULL) return;
 
 <% classes.each { clazz -> %>
