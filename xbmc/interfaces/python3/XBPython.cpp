@@ -606,7 +606,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // would not do that in that case.
     PyEval_AcquireLock();
     char* python_argv[1] = { (char*)"" };
-    PySys_SetArgv(1, python_argv);
+    PySys_SetArgv(1, (wchar_t **)python_argv);
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");
