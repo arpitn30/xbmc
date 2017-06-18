@@ -284,8 +284,14 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         return false;
       }
 #endif
-      PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
-      FILE *fp = PyFile_AsFile(file);
+    //   Python 2 code, remove if works without it
+    //   PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
+    //   FILE *fp = PyFile_AsFile(file);
+    PyObject *ioMod, *openedFile;
+    ioMod = PyImport_ImportModule("io");
+    openedFile = PyObject_CallMethod(ioMod, "open", "ss", (char *)nativeFilename.c_str(), "r");
+    Py_DECREF(ioMod);
+    FILE *fp = py3c_PyFile_AsFileWithMode(openedFile, (char *)"r");
 
       if (fp != NULL)
       {
