@@ -31,7 +31,7 @@ class CHTTPVfsHandler;
 class CHTTPJsonRpcHandler;
 #endif // HAS_JSONRPC
 #ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
 class CHTTPPythonHandler;
 #endif
 class CHTTPWebinterfaceHandler;
@@ -111,7 +111,7 @@ private:
   CHTTPJsonRpcHandler& m_httpJsonRpcHandler;
 #endif
 #ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   CHTTPPythonHandler& m_httpPythonHandler;
 #endif
   CHTTPWebinterfaceHandler& m_httpWebinterfaceHandler;

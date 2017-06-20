@@ -24,7 +24,7 @@
 #include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
 #include "GUIInfoManager.h"
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/ContextItemAddonInvoker.h"
 #include "interfaces/python/XBPython.h"
@@ -61,7 +61,7 @@ bool CContextMenuItem::Execute(const CFileItemPtr& item) const
   if (!ADDON::CAddonMgr::GetInstance().GetAddon(m_addonId, addon))
     return false;
 
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   LanguageInvokerPtr invoker(new CContextItemAddonInvoker(&g_pythonParser, item));
   return (CScriptInvocationManager::GetInstance().ExecuteAsync(m_library, invoker, addon) != -1);
 #else

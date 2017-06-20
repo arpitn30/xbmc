@@ -906,7 +906,7 @@ void CGUIWindowManager::OnApplicationMessage(ThreadMessage* pMsg)
   }
   break;
 
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   case TMSG_GUI_PYTHON_DIALOG:
   {
     // This hack is not much better but at least I don't need to make ApplicationMessenger

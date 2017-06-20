@@ -48,7 +48,7 @@ ANNOUNCEMENT::CAnnouncementManager &CServiceBroker::GetAnnouncementManager()
   return g_application.m_ServiceManager->GetAnnouncementManager();
 }
 
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
 XBPython& CServiceBroker::GetXBPython()
 {
   return g_application.m_ServiceManager->GetXBPython();

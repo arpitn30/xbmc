@@ -55,7 +55,7 @@
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
 #include "interfaces/python/XBPython.h"
 #endif
 #include "input/ActionTranslator.h"
@@ -3502,7 +3502,7 @@ void CApplication::OnPlayBackEnded()
 
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnPlayBackEnded();
 #endif
 #ifdef TARGET_ANDROID
@@ -3527,7 +3527,7 @@ void CApplication::OnPlayBackStarted()
   if(m_bPlaybackStarting)
     return;
 
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   // informs python script currently running playback has started
   // (does nothing if python is not loaded)
   g_pythonParser.OnPlayBackStarted();
@@ -3551,7 +3551,7 @@ void CApplication::OnQueueNextItem()
     return;
   // informs python script currently running that we are requesting the next track
   // (does nothing if python is not loaded)
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnQueueNextItem(); // currently unimplemented
 #endif
 
@@ -3569,7 +3569,7 @@ void CApplication::OnPlayBackStopped()
 
   // informs python script currently running playback has ended
   // (does nothing if python is not loaded)
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnPlayBackStopped();
 #endif
 #ifdef TARGET_ANDROID
@@ -3588,7 +3588,7 @@ void CApplication::OnPlayBackStopped()
 
 void CApplication::OnPlayBackPaused()
 {
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnPlayBackPaused();
 #endif
 #ifdef TARGET_ANDROID
@@ -3605,7 +3605,7 @@ void CApplication::OnPlayBackPaused()
 
 void CApplication::OnPlayBackResumed()
 {
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnPlayBackResumed();
 #endif
 #ifdef TARGET_ANDROID
@@ -3623,7 +3623,7 @@ void CApplication::OnPlayBackResumed()
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 {
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnPlayBackSpeedChanged(iSpeed);
 #endif
 
@@ -3635,7 +3635,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
 void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
 {
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnPlayBackSeek(static_cast<int>(iTime), static_cast<int>(seekOffset));
 #endif
 
@@ -3650,7 +3650,7 @@ void CApplication::OnPlayBackSeek(int64_t iTime, int64_t seekOffset)
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
 {
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnPlayBackSeekChapter(iChapter);
 #endif
 }
@@ -4402,7 +4402,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr, const CGUIListItemPt
       return true;
     }
     CFileItem item(actionStr, false);
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
     if (item.IsPythonScript())
     { // a python script
       CScriptInvocationManager::GetInstance().ExecuteAsync(item.GetPath());

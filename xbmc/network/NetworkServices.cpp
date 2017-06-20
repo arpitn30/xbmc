@@ -75,7 +75,7 @@
 #include "network/httprequesthandler/HTTPJsonRpcHandler.h"
 #endif // HAS_JSONRPC
 #ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
 #include "network/httprequesthandler/HTTPPythonHandler.h"
 #endif
 #include "network/httprequesthandler/HTTPWebinterfaceHandler.h"
@@ -111,7 +111,7 @@ CNetworkServices::CNetworkServices()
   , m_httpJsonRpcHandler(*new CHTTPJsonRpcHandler)
 #endif // HAS_JSONRPC
 #ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   , m_httpPythonHandler(*new CHTTPPythonHandler)
 #endif
   , m_httpWebinterfaceHandler(*new CHTTPWebinterfaceHandler)
@@ -127,7 +127,7 @@ CNetworkServices::CNetworkServices()
   m_webserver.RegisterRequestHandler(&m_httpJsonRpcHandler);
 #endif // HAS_JSONRPC
 #ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   m_webserver.RegisterRequestHandler(&m_httpPythonHandler);
 #endif
   m_webserver.RegisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
@@ -151,7 +151,7 @@ CNetworkServices::~CNetworkServices()
   CJSONRPC::Cleanup();
 #endif // HAS_JSONRPC
 #ifdef HAS_WEB_INTERFACE
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   m_webserver.UnregisterRequestHandler(&m_httpPythonHandler);
   delete &m_httpPythonHandler;
 #endif

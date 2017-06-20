@@ -44,7 +44,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
 #include "interfaces/python/XBPython.h"
 #endif
 #if defined(TARGET_DARWIN)
@@ -201,10 +201,10 @@ void CAddon::SaveSettings(void)
     doc.SaveFile(m_userSettingsPath);
 
   m_hasUserSettings = true;
-  
+
   //push the settings changes to the running addon instance
   CAddonMgr::GetInstance().ReloadSettings(ID());
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   g_pythonParser.OnSettingsChanged(ID());
 #endif
 }
@@ -426,4 +426,3 @@ void OnPostUnInstall(const AddonPtr& addon)
 }
 
 } /* namespace ADDON */
-

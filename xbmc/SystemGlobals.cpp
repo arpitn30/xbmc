@@ -29,7 +29,7 @@
 #include "utils/LangCodeExpander.h"
 #include "PartyModeManager.h"
 #include "guilib/LocalizeStrings.h"
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
 #include "interfaces/python/XBPython.h"
 #endif
 

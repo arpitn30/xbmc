@@ -632,7 +632,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     g_application.PlayFile(*pItem, player);
     return ;
   }
-#ifdef HAS_PYTHON
+#ifdef HAS_PYTHON2
   if (pItem->IsPythonScript())
   {
     CScriptInvocationManager::GetInstance().ExecuteAsync(pItem->GetPath());
