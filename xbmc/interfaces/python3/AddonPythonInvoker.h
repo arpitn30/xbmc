@@ -19,7 +19,7 @@
  *
  */
 
-#include "interfaces/python/PythonInvoker.h"
+#include "interfaces/python3/PythonInvoker.h"
 
 class CAddonPythonInvoker : public CPythonInvoker
 {

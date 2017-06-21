@@ -20,7 +20,7 @@
  */
 
 #include <memory>
-#include "interfaces/python/AddonPythonInvoker.h"
+#include "interfaces/python3/AddonPythonInvoker.h"
 
 class CFileItem;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
