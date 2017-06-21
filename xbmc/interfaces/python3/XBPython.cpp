@@ -543,12 +543,12 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
   {
     // first we check if all necessary files are installed
 #ifndef TARGET_POSIX
-    if (!FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
+    if (!FileExist("special://xbmc/system/python3/DLLs/_socket.pyd") ||
+      !FileExist("special://xbmc/system/python3/DLLs/_ssl.pyd") ||
+      !FileExist("special://xbmc/system/python3/DLLs/bz2.pyd") ||
+      !FileExist("special://xbmc/system/python3/DLLs/pyexpat.pyd") ||
+      !FileExist("special://xbmc/system/python3/DLLs/select.pyd") ||
+      !FileExist("special://xbmc/system/python3/DLLs/unicodedata.pyd"))
     {
       CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
       Finalize();
@@ -583,11 +583,11 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // because the third party build of python is compiled with vs2008 we need
     // a hack to set the PYTHONPATH
     std::string buf;
-    buf = "PYTHONPATH=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs") + ";" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
+    buf = "PYTHONPATH=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python3/DLLs") + ";" + CSpecialProtocol::TranslatePath("special://xbmc/system/python3/Lib");
     CEnvironment::putenv(buf);
     buf = "PYTHONOPTIMIZE=1";
     CEnvironment::putenv(buf);
-    buf = "PYTHONHOME=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python");
+    buf = "PYTHONHOME=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python3");
     CEnvironment::putenv(buf);
     buf = "OS=win32";
     CEnvironment::putenv(buf);

@@ -38,9 +38,11 @@
                  "special://xbmcbin/;" \
                  "special://xbmcbin/system/;" \
                  "special://xbmcbin/system/python/;" \
+                 "special://xbmcbin/system/python3/;" \
                  "special://xbmc/;" \
                  "special://xbmc/system/;" \
-                 "special://xbmc/system/python/"
+                 "special://xbmc/system/python/" \
+                 "special://xbmc/system/python3/"
 #else
 #define ENV_PARTIAL_PATH \
                  "special://xbmcbin/system/;" \
@@ -48,11 +50,13 @@
                  "special://xbmcbin/system/players/VideoPlayer/;" \
                  "special://xbmcbin/system/players/paplayer/;" \
                  "special://xbmcbin/system/python/;" \
+                 "special://xbmcbin/system/python3/;" \
                  "special://xbmc/system/;" \
                  "special://xbmc/system/players/mplayer/;" \
                  "special://xbmc/system/players/VideoPlayer/;" \
                  "special://xbmc/system/players/paplayer/;" \
-                 "special://xbmc/system/python/"
+                 "special://xbmc/system/python/" \
+                 "special://xbmc/system/python3/"
 #endif
 #if defined(TARGET_DARWIN)
 #define ENV_PATH ENV_PARTIAL_PATH \
