@@ -44,7 +44,7 @@ option(ENABLE_DVDCSS      "Enable libdvdcss support?" ON)
 option(ENABLE_UPNP        "Enable UPnP support?" ON)
 option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
-option(ENABLE_PYTHON      "Enable python support?" ON)
+option(ENABLE_PYTHON2      "Enable python 2 support?" ON)
 option(ENABLE_PYTHON3      "Enable python 3 support?" ON)
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
@@ -140,7 +140,7 @@ set(optional_deps Alsa
                   MicroHttpd
                   MySqlClient
                   PulseAudio
-                  Python
+                  Python2
                   Python3
                   SmbClient
                   Sndio
