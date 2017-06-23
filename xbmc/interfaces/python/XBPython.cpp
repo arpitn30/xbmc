@@ -545,7 +545,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
 #ifndef TARGET_POSIX
     if (!FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
+      !FileExist("special://xbmc/system/python/DLLs/_bz2.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
