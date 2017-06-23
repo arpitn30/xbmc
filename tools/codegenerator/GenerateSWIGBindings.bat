@@ -8,7 +8,7 @@ SET generator_dir=%base_dir%\tools\codegenerator
 SET bin_dir=%cur_dir%\..\BuildDependencies\bin
 SET java_exe=java.exe
 
-rem go into xbmc/interfaces/python
+rem go into xbmc/interfaces/python2
 cd "%1\..\python"
 
 SET python_dir=%CD%

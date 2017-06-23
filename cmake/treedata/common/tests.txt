@@ -1,7 +1,8 @@
 xbmc/test                         test
 xbmc/addons/test                  test/addons
 xbmc/filesystem/test              test/filesystem
-xbmc/interfaces/python/test       test/python
+xbmc/interfaces/python2/test      test/python2
+xbmc/interfaces/python3/test      test/python3
 xbmc/music/tags/test              test/music_tags
 xbmc/network/test                 test/network
 xbmc/threads/test                 test/threads

@@ -4651,20 +4651,20 @@ msgid "Newer version needed. Check the log for more information about this messa
 msgstr ""
 
 #. Notification message indicating an add-on error. "<Add-on name> error".
-#: xbmc/interfaces/python/PythonInvoker.cpp
+#: xbmc/interfaces/python2/PythonInvoker.cpp
 msgctxt "#2102"
 msgid "{0:s} error"
 msgstr ""
 
 #. Fallback message indicating an add-on error.
-#: xbmc/interfaces/python/PythonInvoker.cpp
+#: xbmc/interfaces/python2/PythonInvoker.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 msgctxt "#2103"
 msgid "Add-on error"
 msgstr ""
 
 #. Used for add-on error kaitoast.
-#: xbmc/interfaces/python/PythonInvoker.cpp
+#: xbmc/interfaces/python2/PythonInvoker.cpp
 msgctxt "#2104"
 msgid "Check the log for more information."
 msgstr ""

@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include "interfaces/python/PythonInvoker.h"
+#include "interfaces/python3/PythonInvoker.h"
 #include "network/httprequesthandler/IHTTPRequestHandler.h"
 #include "network/httprequesthandler/python/HTTPPythonRequest.h"
 

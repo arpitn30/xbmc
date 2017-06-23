@@ -25,7 +25,7 @@
 #include "system.h"
 #include "ContextItemAddonInvoker.h"
 #include "utils/log.h"
-#include "interfaces/python/swig.h"
+#include "interfaces/python2/swig.h"
 
 
 CContextItemAddonInvoker::CContextItemAddonInvoker(

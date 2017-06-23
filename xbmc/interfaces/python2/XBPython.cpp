@@ -43,8 +43,8 @@
 
 #include "interfaces/legacy/Monitor.h"
 #include "interfaces/legacy/AddonUtils.h"
-#include "interfaces/python/AddonPythonInvoker.h"
-#include "interfaces/python/PythonInvoker.h"
+#include "interfaces/python2/AddonPythonInvoker.h"
+#include "interfaces/python2/PythonInvoker.h"
 
 using namespace ANNOUNCEMENT;
 

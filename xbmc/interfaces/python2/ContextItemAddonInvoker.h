@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2013 Team XBMC
+ *      Copyright (C) 2015 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,16 +19,22 @@
  *
  */
 
-#include "interfaces/python/PythonInvoker.h"
+#include <memory>
+#include "interfaces/python2/AddonPythonInvoker.h"
 
-class CAddonPythonInvoker : public CPythonInvoker
+class CFileItem;
+typedef std::shared_ptr<CFileItem> CFileItemPtr;
+
+class CContextItemAddonInvoker : public CAddonPythonInvoker
 {
 public:
-  explicit CAddonPythonInvoker(ILanguageInvocationHandler *invocationHandler);
-  ~CAddonPythonInvoker() override;
+  explicit CContextItemAddonInvoker(ILanguageInvocationHandler *invocationHandler,
+                                    const CFileItemPtr& item);
+  ~CContextItemAddonInvoker() override;
 
 protected:
-  // overrides of CPythonInvoker
-  std::map<std::string, PythonModuleInitialization> getModules() const override;
-  const char* getInitializationScript() const override;
+  void onPythonModuleInitialization(void* moduleDict) override;
+
+private:
+  const CFileItemPtr m_item;
 };

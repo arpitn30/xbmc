@@ -22,7 +22,7 @@
 #include "URL.h"
 #include "addons/Webinterface.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "interfaces/python/XBPython.h"
+#include "interfaces/python2/XBPython.h"
 #include "filesystem/File.h"
 #include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPRequestHandlerUtils.h"

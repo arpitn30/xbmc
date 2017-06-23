@@ -18,4 +18,4 @@ set(HEADERS AddonPythonInvoker.h
             swig.h
             XBPython.h)
 
-core_add_library(python_interface)
+core_add_library(python2_interface)

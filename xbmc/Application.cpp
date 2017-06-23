@@ -56,7 +56,7 @@
 #include "addons/VFSEntry.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #ifdef HAS_PYTHON2
-#include "interfaces/python/XBPython.h"
+#include "interfaces/python2/XBPython.h"
 #endif
 #include "input/ActionTranslator.h"
 #include "input/ButtonTranslator.h"
@@ -1694,7 +1694,7 @@ bool CApplication::LoadSkin(const std::string& skinID)
     if (bPreviousRenderingState)
       g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
   }
-  
+
   return true;
 }
 

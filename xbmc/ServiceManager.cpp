@@ -35,7 +35,7 @@
 #include "input/InputManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "interfaces/python/XBPython.h"
+#include "interfaces/python2/XBPython.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
 

@@ -26,8 +26,8 @@
 #include "GUIInfoManager.h"
 #ifdef HAS_PYTHON2
 #include "interfaces/generic/ScriptInvocationManager.h"
-#include "interfaces/python/ContextItemAddonInvoker.h"
-#include "interfaces/python/XBPython.h"
+#include "interfaces/python2/ContextItemAddonInvoker.h"
+#include "interfaces/python2/XBPython.h"
 #endif
 #include "utils/StringUtils.h"
 

@@ -30,7 +30,7 @@
 #include "PartyModeManager.h"
 #include "guilib/LocalizeStrings.h"
 #ifdef HAS_PYTHON2
-#include "interfaces/python/XBPython.h"
+#include "interfaces/python2/XBPython.h"
 #endif
 
 // Guarantee that CSpecialProtocol is initialized before and uninitialized after ZipManager

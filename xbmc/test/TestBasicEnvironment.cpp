@@ -35,7 +35,7 @@
 #include "PlayListPlayer.h"
 #include "interfaces/AnnouncementManager.h"
 #include "addons/BinaryAddonCache.h"
-#include "interfaces/python/XBPython.h"
+#include "interfaces/python2/XBPython.h"
 #include "pvr/PVRManager.h"
 #include "AppParamParser.h"
 

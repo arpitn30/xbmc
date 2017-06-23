@@ -26,7 +26,7 @@
 #include "interfaces/legacy/wsgi/WsgiErrorStream.h"
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
-#include "interfaces/python/swig.h"
+#include "interfaces/python2/swig.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
 
