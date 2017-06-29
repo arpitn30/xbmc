@@ -45,7 +45,7 @@
 #include "interfaces/legacy/AddonUtils.h"
 #include "interfaces/python/AddonPythonInvoker.h"
 #include "interfaces/python/PythonInvoker.h"
-
+PyThreadState* savestate;
 using namespace ANNOUNCEMENT;
 
 XBPython::XBPython()
@@ -459,8 +459,9 @@ void XBPython::Finalize()
     m_mainThreadState = NULL; // clear the main thread state before releasing the lock
     {
       CSingleExit exit(m_critSection);
-      PyEval_AcquireLock();
-      PyThreadState_Swap(curTs);
+      //PyEval_AcquireLock();
+      //PyThreadState_Swap(curTs);
+	  PyEval_AcquireThread(curTs);
 
       Py_Finalize();
       PyEval_ReleaseLock();
@@ -607,7 +608,8 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");
-    PyEval_ReleaseLock();
+    //PyEval_ReleaseLock();
+	savestate = PyEval_SaveThread();
 
     m_bInitialized = true;
   }
