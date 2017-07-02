@@ -922,7 +922,16 @@ namespace PythonBindings
     }
   }
 
-  void initModule_${module.@name}()
+  static struct PyModuleDef createModule
+  {
+      PyModuleDef_HEAD_INIT,
+      (char*)"${module.@name}",
+      "",
+      -1,
+      ${module.@name}_methods
+  };
+
+  PyObject *PyInit_Module_${module.@name}()
   {
     initTypes();
 
@@ -932,16 +941,11 @@ namespace PythonBindings
 <% classNameAsVariables.each { %>
     Py_INCREF(&(Ty${it}_Type.pythonType));<%
    }%>
-    static struct PyModuleDef nameAsVariable
-    {
-        PyModuleDef_HEAD_INIT,
-        (char*)"${module.@name}",
-        "",
-        -1,
-        ${module.@name}_methods
-    };
-    module = PyModule_Create(&nameAsVariable);
-    if (module == NULL) return;
+
+    module = PyModule_Create(&createModule);
+
+    if (module == NULL) return NULL;
+    if (PyModule_AddObject(module, "hookable", (PyObject *)&hookabletype) < 0) return NULL;
 
 <% classes.each { clazz -> %>
     PyModule_AddObject(module, (char*)"${clazz.@sym_name}", (PyObject*)(&(Ty${PythonTools.getClassNameAsVariable(clazz)}_Type.pythonType)));<%
@@ -961,6 +965,7 @@ namespace PythonBindings
         'PyModule_AddIntConstant' : 'PyModule_AddStringConstant' %>
    ${pyCall}(module,"${it.@sym_name}",${it.@value}); <%
   } %>
+  return module;
   }
 
 } // end PythonBindings namespace for python type definitions
