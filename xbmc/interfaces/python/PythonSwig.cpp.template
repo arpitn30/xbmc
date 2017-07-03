@@ -943,9 +943,7 @@ namespace PythonBindings
    }%>
 
     module = PyModule_Create(&createModule);
-
     if (module == NULL) return NULL;
-    if (PyModule_AddObject(module, "hookable", (PyObject *)&hookabletype) < 0) return NULL;
 
 <% classes.each { clazz -> %>
     PyModule_AddObject(module, (char*)"${clazz.@sym_name}", (PyObject*)(&(Ty${PythonTools.getClassNameAsVariable(clazz)}_Type.pythonType)));<%
