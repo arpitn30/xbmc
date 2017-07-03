@@ -18,6 +18,8 @@
  *
  */
 
+#include <Python.h>
+
 #include "HTTPPythonWsgiInvoker.h"
 
 #include <utility>
@@ -76,8 +78,8 @@
 #endif
 
 namespace PythonBindings {
-  void initModule_xbmc(void);
-  void initModule_xbmcwsgi(void);
+  PyObject* PyInit_Module_xbmc(void);
+  PyObject* PyInit_Module_xbmcwsgi(void);
 }
 
 using namespace PythonBindings;
@@ -90,8 +92,8 @@ typedef struct
 
 static PythonModule PythonModules[] =
 {
-  { "xbmc",           initModule_xbmc },
-  { "xbmcwsgi",       initModule_xbmcwsgi }
+  { "xbmc",           PyInit_Module_xbmc },
+  { "xbmcwsgi",       PyInit_Module_xbmcwsgi }
 };
 
 #define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
