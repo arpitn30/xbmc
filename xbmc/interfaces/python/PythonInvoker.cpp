@@ -236,12 +236,19 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     }
   }
   else
-    addNativePath((char *)Py_GetPath());
+  {
+      std::string GetPath;
+      g_charsetConverter.wToUTF8(Py_GetPath(), GetPath);
+      addNativePath(GetPath);
+  }
 
   Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
-  PySys_SetArgv(argc, (wchar_t **)(&argv[0]));
+  std::wstring argvstring;
+  g_charsetConverter.utf8ToW(argv[0], argvstring);
+  wchar_t* wc = const_cast<wchar_t*>(argvstring.c_str());
+  PySys_SetArgv(argc, &wc);
 
 #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
@@ -250,7 +257,9 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 #else // ! TARGET_WINDOWS
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
 #endif // ! TARGET_WINDOWS
-  PySys_SetPath((wchar_t *)m_pythonPath.c_str());
+  std::wstring pypath;
+  g_charsetConverter.utf8ToW(m_pythonPath.c_str(), pypath);
+  PySys_SetPath(pypath.c_str());
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(), m_sourceFile.c_str(), scriptDir.c_str());
   PyObject* module = PyImport_AddModule((char*)"__main__");
