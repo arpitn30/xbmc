@@ -633,8 +633,11 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
   if (module == NULL)
     return false;
 
-  module();
-  return true;
+  if(module() == NULL)
+    return false;
+  else
+    return true;
+
 }
 
 void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths)
