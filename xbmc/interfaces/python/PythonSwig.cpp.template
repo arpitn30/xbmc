@@ -933,7 +933,6 @@ namespace PythonBindings
 
   PyObject *PyInit_Module_${module.@name}()
   {
-    try{
     initTypes();
 
     // init general ${module.@name} modules
@@ -965,11 +964,6 @@ namespace PythonBindings
    ${pyCall}(module,"${it.@sym_name}",${it.@value}); <%
   } %>
   return module;
-  }
-  catch(...)
-  {
-    return NULL;
-  }
   }
 
 } // end PythonBindings namespace for python type definitions
