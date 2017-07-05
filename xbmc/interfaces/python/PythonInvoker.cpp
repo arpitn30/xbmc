@@ -633,11 +633,6 @@ void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const 
   }
 }
 
-const char* CPythonInvoker::getInitializationScript() const
-{
-  return NULL;
-}
-
 void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleInitialization> &modules)
 {
   for (std::map<std::string, PythonModuleInitialization>::const_iterator module = modules.begin(); module != modules.end(); ++module)
@@ -652,10 +647,7 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
   if (module == NULL)
     return false;
 
-  if(module() == nullptr)
-    return false;
-  else
-    return true;
+  return module() != nullptr;
 
 }
 
