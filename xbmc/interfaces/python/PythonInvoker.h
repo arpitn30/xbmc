@@ -50,7 +50,7 @@ protected:
 
   // custom virtual methods
   virtual std::map<std::string, PythonModuleInitialization> getModules() const = 0;
-  virtual const char* getInitializationScript() const;
+  virtual const char* getInitializationScript() const = 0;
   virtual void onInitialization();
   // actually a PyObject* but don't wanna draw Python.h include into the header
   virtual void onPythonModuleInitialization(void* moduleDict);
@@ -69,6 +69,7 @@ private:
   void addPath(const std::string& path); // add path in UTF-8 encoding
   void addNativePath(const std::string& path); // add path in system/Python encoding
   void getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths);
+  bool execute(const std::string &script, const std::vector<std::wstring> &arguments);
 
   std::string m_pythonPath;
   void *m_threadState;
