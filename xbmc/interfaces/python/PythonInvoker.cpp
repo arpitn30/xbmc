@@ -98,23 +98,23 @@ static const std::string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Re
   return message;
 }
 
-static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std::string> const & input)
+static std::vector<std::vector<wchar_t>> storeArgumentsCCompatible(std::vector<std::wstring> const & input)
 {
-  std::vector<std::vector<char>> output;
+  std::vector<std::vector<wchar_t>> output;
   std::transform(input.begin(), input.end(), std::back_inserter(output),
-                [](std::string const & i) { return std::vector<char>(i.c_str(), i.c_str() + i.length() + 1); });
+                [](std::wstring const & i) { return std::vector<wchar_t>(i.c_str(), i.c_str() + i.length() + 1); });
 
   if (output.empty())
-    output.push_back(std::vector<char>(1u, '\0'));
+    output.push_back(std::vector<wchar_t>(1u, '\0'));
 
   return output;
 }
 
-static std::vector<char *> getCPointersToArguments(std::vector<std::vector<char>> & input)
+static std::vector<wchar_t *> getCPointersToArguments(std::vector<std::vector<wchar_t>> & input)
 {
-  std::vector<char *> output;
+  std::vector<wchar_t *> output;
   std::transform(input.begin(), input.end(), std::back_inserter(output),
-                [](std::vector<char> & i) { return &i[0]; });
+                [](std::vector<wchar_t> & i) { return &i[0]; });
   return output;
 }
 
@@ -158,13 +158,25 @@ bool CPythonInvoker::Execute(const std::string &script, const std::vector<std::s
 
 bool CPythonInvoker::execute(const std::string &script, const std::vector<std::string> &arguments)
 {
+  std::vector<std::wstring> w_arguments;
+  for (auto argument : arguments)
+  {
+    std::wstring w_argument;
+    g_charsetConverter.utf8ToW(argument, w_argument);
+    w_arguments.push_back(w_argument);
+  }
+  return execute(script, w_arguments);
+}
+
+bool CPythonInvoker::execute(const std::string &script, const std::vector<std::wstring> &arguments)
+{
   // copy the code/script into a local string buffer
   m_sourceFile = script;
 
   // copy the arguments into a local buffer
   unsigned int argc = arguments.size();
-  std::vector<std::vector<char>> argvStorage = storeArgumentsCCompatible(arguments);
-  std::vector<char *> argv = getCPointersToArguments(argvStorage);
+  std::vector<std::vector<wchar_t>> argvStorage = storeArgumentsCCompatible(arguments);
+  std::vector<wchar_t *> argv = getCPointersToArguments(argvStorage);
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
 
@@ -245,10 +257,7 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
   Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
-  std::wstring argvstring;
-  g_charsetConverter.utf8ToW(argv[0], argvstring);
-  wchar_t* wc = const_cast<wchar_t*>(argvstring.c_str());
-  PySys_SetArgv(argc, &wc);
+  PySys_SetArgv(argc, &argv[0]);
 
 #ifdef TARGET_WINDOWS
   std::string pyPathUtf8;
@@ -257,8 +266,9 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 #else // ! TARGET_WINDOWS
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
 #endif // ! TARGET_WINDOWS
+
   std::wstring pypath;
-  g_charsetConverter.utf8ToW(m_pythonPath.c_str(), pypath);
+  g_charsetConverter.utf8ToW(m_pythonPath, pypath);
   PySys_SetPath(pypath.c_str());
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(), m_sourceFile.c_str(), scriptDir.c_str());
@@ -642,7 +652,7 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
   if (module == NULL)
     return false;
 
-  if(module() == NULL)
+  if(module() == nullptr)
     return false;
   else
     return true;
