@@ -56,7 +56,7 @@
   "  return __path__\n" \
   "\"\"\"\n" \
   "pkg_resources = types.ModuleType('pkg_resources')\n" \
-  "exec pkg_resources_code in pkg_resources.__dict__\n" \
+  "exec(pkg_resources_code, pkg_resources.__dict__)\n" \
   "sys.modules['pkg_resources'] = pkg_resources\n" \
   ""
 
