@@ -32,7 +32,7 @@
 #include "URL.h"
 #include "utils/URIUtils.h"
 
-#define MODULE      "xbmc"
+#define MODULE "xbmc"
 
 #define RUNSCRIPT_PREAMBLE \
   "" \
@@ -54,14 +54,14 @@
 
 #define RUNSCRIPT_SETUPTOOLS_HACK \
   "" \
-  "import imp,sys\n" \
+  "import types,sys\n" \
   "pkg_resources_code = \\\n" \
   "\"\"\"\n" \
   "def resource_filename(__name__,__path__):\n" \
   "  return __path__\n" \
   "\"\"\"\n" \
-  "pkg_resources = imp.new_module('pkg_resources')\n" \
-  "exec pkg_resources_code in pkg_resources.__dict__\n" \
+  "pkg_resources = types.ModuleType('pkg_resources')\n" \
+  "exec(pkg_resources_code, pkg_resources.__dict__)\n" \
   "sys.modules['pkg_resources'] = pkg_resources\n" \
   ""
 
