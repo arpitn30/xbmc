@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -49,19 +49,19 @@
 
 #define RUNSCRIPT_SETUPTOOLS_HACK \
   "" \
-  "import imp,sys\n" \
+  "import types,sys\n" \
   "pkg_resources_code = \\\n" \
   "\"\"\"\n" \
   "def resource_filename(__name__,__path__):\n" \
   "  return __path__\n" \
   "\"\"\"\n" \
-  "pkg_resources = imp.new_module('pkg_resources')\n" \
-  "exec pkg_resources_code in pkg_resources.__dict__\n" \
+  "pkg_resources = types.ModuleType('pkg_resources')\n" \
+  "exec(pkg_resources_code, pkg_resources.__dict__)\n" \
   "sys.modules['pkg_resources'] = pkg_resources\n" \
   ""
 
 #define RUNSCRIPT_POSTSCRIPT \
-        "print '-->Python Interpreter Initialized<--'\n" \
+        "print ('-->Python Interpreter Initialized<--')\n" \
         ""
 
 #if defined(TARGET_ANDROID)
@@ -77,11 +77,11 @@
 #endif
 
 namespace PythonBindings {
-  void initModule_xbmcgui(void);
-  void initModule_xbmc(void);
-  void initModule_xbmcplugin(void);
-  void initModule_xbmcaddon(void);
-  void initModule_xbmcvfs(void);
+  PyObject *PyInit_Module_xbmcgui(void);
+  PyObject *PyInit_Module_xbmc(void);
+  PyObject *PyInit_Module_xbmcplugin(void);
+  PyObject *PyInit_Module_xbmcaddon(void);
+  PyObject *PyInit_Module_xbmcvfs(void);
 }
 
 using namespace PythonBindings;
@@ -94,11 +94,11 @@ typedef struct
 
 static PythonModule PythonModules[] =
   {
-    { "xbmcgui",    initModule_xbmcgui    },
-    { "xbmc",       initModule_xbmc       },
-    { "xbmcplugin", initModule_xbmcplugin },
-    { "xbmcaddon",  initModule_xbmcaddon  },
-    { "xbmcvfs",    initModule_xbmcvfs    }
+    { "xbmcgui",    PyInit_Module_xbmcgui    },
+    { "xbmc",       PyInit_Module_xbmc       },
+    { "xbmcplugin", PyInit_Module_xbmcplugin },
+    { "xbmcaddon",  PyInit_Module_xbmcaddon  },
+    { "xbmcvfs",    PyInit_Module_xbmcvfs    }
   };
 
 #define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)

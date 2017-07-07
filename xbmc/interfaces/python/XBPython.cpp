@@ -1,6 +1,6 @@
 /*
- *      Copyright (C) 2005-2013 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2017 Team Kodi
+ *      http://www.kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -45,7 +45,7 @@
 #include "interfaces/legacy/AddonUtils.h"
 #include "interfaces/python/AddonPythonInvoker.h"
 #include "interfaces/python/PythonInvoker.h"
-
+PyThreadState* savestate;
 using namespace ANNOUNCEMENT;
 
 XBPython::XBPython()
@@ -459,8 +459,9 @@ void XBPython::Finalize()
     m_mainThreadState = NULL; // clear the main thread state before releasing the lock
     {
       CSingleExit exit(m_critSection);
-      PyEval_AcquireLock();
-      PyThreadState_Swap(curTs);
+      //PyEval_AcquireLock();
+      //PyThreadState_Swap(curTs);
+	  PyEval_AcquireThread(curTs);
 
       Py_Finalize();
       PyEval_ReleaseLock();
@@ -545,7 +546,7 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
 #ifndef TARGET_POSIX
     if (!FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
-      !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
+      !FileExist("special://xbmc/system/python/DLLs/_bz2.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/select.pyd") ||
       !FileExist("special://xbmc/system/python/DLLs/unicodedata.pyd"))
@@ -593,24 +594,22 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     CEnvironment::putenv(buf);
 #endif
 
-    if (PyEval_ThreadsInitialized())
-      PyEval_AcquireLock();
-    else
-      PyEval_InitThreads();
-
     Py_Initialize();
-    PyEval_ReleaseLock();
 
     // If this is not the first time we initialize Python, the interpreter
     // lock already exists and we need to lock it as PyEval_InitThreads
     // would not do that in that case.
-    PyEval_AcquireLock();
-    char* python_argv[1] = { (char*)"" };
+    if (PyEval_ThreadsInitialized())
+      PyEval_AcquireLock();
+    else
+      PyEval_InitThreads();
+    wchar_t* python_argv[1] = { (wchar_t*)"" };
     PySys_SetArgv(1, python_argv);
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");
-    PyEval_ReleaseLock();
+    //PyEval_ReleaseLock();
+	savestate = PyEval_SaveThread();
 
     m_bInitialized = true;
   }

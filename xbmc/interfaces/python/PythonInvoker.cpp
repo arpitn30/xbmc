@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -22,6 +22,7 @@
 #include <Python.h>
 #include <iterator>
 #include <osdefs.h>
+#include <fileshim.h>
 
 #include "system.h"
 #include "PythonInvoker.h"
@@ -97,23 +98,23 @@ static const std::string getListOfAddonClassesAsString(XBMCAddon::AddonClass::Re
   return message;
 }
 
-static std::vector<std::vector<char>> storeArgumentsCCompatible(std::vector<std::string> const & input)
+static std::vector<std::vector<wchar_t>> storeArgumentsCCompatible(std::vector<std::wstring> const & input)
 {
-  std::vector<std::vector<char>> output;
+  std::vector<std::vector<wchar_t>> output;
   std::transform(input.begin(), input.end(), std::back_inserter(output),
-                [](std::string const & i) { return std::vector<char>(i.c_str(), i.c_str() + i.length() + 1); });
+                [](std::wstring const & i) { return std::vector<wchar_t>(i.c_str(), i.c_str() + i.length() + 1); });
 
   if (output.empty())
-    output.push_back(std::vector<char>(1u, '\0'));
+    output.push_back(std::vector<wchar_t>(1u, '\0'));
 
   return output;
 }
 
-static std::vector<char *> getCPointersToArguments(std::vector<std::vector<char>> & input)
+static std::vector<wchar_t *> getCPointersToArguments(std::vector<std::vector<wchar_t>> & input)
 {
-  std::vector<char *> output;
-  std::transform(input.begin(), input.end(), std::back_inserter(output), 
-                [](std::vector<char> & i) { return &i[0]; });
+  std::vector<wchar_t *> output;
+  std::transform(input.begin(), input.end(), std::back_inserter(output),
+                [](std::vector<wchar_t> & i) { return &i[0]; });
   return output;
 }
 
@@ -157,18 +158,32 @@ bool CPythonInvoker::Execute(const std::string &script, const std::vector<std::s
 
 bool CPythonInvoker::execute(const std::string &script, const std::vector<std::string> &arguments)
 {
+  std::vector<std::wstring> w_arguments;
+  for (auto argument : arguments)
+  {
+    std::wstring w_argument;
+    g_charsetConverter.utf8ToW(argument, w_argument);
+    w_arguments.push_back(w_argument);
+  }
+  return execute(script, w_arguments);
+}
+
+bool CPythonInvoker::execute(const std::string &script, const std::vector<std::wstring> &arguments)
+{
   // copy the code/script into a local string buffer
   m_sourceFile = script;
 
   // copy the arguments into a local buffer
   unsigned int argc = arguments.size();
-  std::vector<std::vector<char>> argvStorage = storeArgumentsCCompatible(arguments);
-  std::vector<char *> argv = getCPointersToArguments(argvStorage);
+  std::vector<std::vector<wchar_t>> argvStorage = storeArgumentsCCompatible(arguments);
+  std::vector<wchar_t *> argv = getCPointersToArguments(argvStorage);
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): start processing", GetId(), m_sourceFile.c_str());
 
   // get the global lock
-  PyEval_AcquireLock();
+  //PyEval_AcquireLock();
+  extern PyThreadState* savestate;
+  PyEval_RestoreThread(savestate);
   PyThreadState* state = Py_NewInterpreter();
   if (state == NULL)
   {
@@ -228,12 +243,16 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     for (int i = 0; i < PyList_Size(pathObj); i++)
     {
       PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-      if (e != NULL && PyString_Check(e))
-        addNativePath(PyString_AsString(e)); // returns internal data, don't delete or modify
+      if (e != NULL && PyUnicode_Check(e))
+        addNativePath(PyUnicode_AsUTF8(e)); // returns internal data, don't delete or modify
     }
   }
   else
-    addNativePath(Py_GetPath());
+  {
+      std::string GetPath;
+      g_charsetConverter.wToUTF8(Py_GetPath(), GetPath);
+      addNativePath(GetPath);
+  }
 
   Py_DECREF(sysMod); // release ref to sysMod
 
@@ -247,7 +266,10 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
 #else // ! TARGET_WINDOWS
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): setting the Python path to %s", GetId(), m_sourceFile.c_str(), m_pythonPath.c_str());
 #endif // ! TARGET_WINDOWS
-  PySys_SetPath((char *)m_pythonPath.c_str());
+
+  std::wstring pypath;
+  g_charsetConverter.utf8ToW(m_pythonPath, pypath);
+  PySys_SetPath(pypath.c_str());
 
   CLog::Log(LOGDEBUG, "CPythonInvoker(%d, %s): entering source directory %s", GetId(), m_sourceFile.c_str(), scriptDir.c_str());
   PyObject* module = PyImport_AddModule((char*)"__main__");
@@ -264,8 +286,9 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     stopping = m_stop;
   }
 
-  PyEval_AcquireLock();
-  PyThreadState_Swap(state);
+  //PyEval_AcquireLock();
+  //PyThreadState_Swap(state);
+  PyEval_AcquireThread(state);
 
   bool failed = false;
   std::string exceptionType, exceptionValue, exceptionTraceback;
@@ -285,12 +308,17 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
         return false;
       }
 #endif
-      PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
-      FILE *fp = PyFile_AsFile(file);
+    //   PyObject* file = PyFile_FromString((char *)nativeFilename.c_str(), (char*)"r");
+    //   FILE *fp = PyFile_AsFile(file);
+    PyObject *ioMod, *openedFile;
+    ioMod = PyImport_ImportModule("io");
+    openedFile = PyObject_CallMethod(ioMod, "open", "ss", (char *)nativeFilename.c_str(), "r");
+    Py_DECREF(ioMod);
+    FILE *fp = py3c_PyFile_AsFileWithMode(openedFile, (char *)"r");
 
       if (fp != NULL)
       {
-        PyObject *f = PyString_FromString(nativeFilename.c_str());
+        PyObject *f = PyUnicode_FromString(nativeFilename.c_str());
         PyDict_SetItemString(moduleDict, "__file__", f);
 
         onPythonModuleInitialization(moduleDict);
@@ -400,8 +428,9 @@ bool CPythonInvoker::execute(const std::string &script, const std::vector<std::s
     m_threadState = NULL;
   }
 
-  PyEval_AcquireLock();
-  PyThreadState_Swap(state);
+  //PyEval_AcquireLock();
+  //PyThreadState_Swap(state);
+  PyEval_AcquireThread(state);
 
   onDeinitialization();
 
@@ -541,12 +570,6 @@ void CPythonInvoker::onExecutionFailed()
   ILanguageInvoker::onExecutionFailed();
 }
 
-std::map<std::string, CPythonInvoker::PythonModuleInitialization> CPythonInvoker::getModules() const
-{
-  static std::map<std::string, PythonModuleInitialization> modules;
-  return modules;
-}
-
 void CPythonInvoker::onInitialization()
 {
   XBMC_TRACE;
@@ -572,11 +595,11 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 
   PyObject *moduleDictionary = (PyObject *)moduleDict;
 
-  PyObject *pyaddonid = PyString_FromString(m_addon->ID().c_str());
+  PyObject *pyaddonid = PyUnicode_FromString(m_addon->ID().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
 
   ADDON::AddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
-  PyObject *pyxbmcapiversion = PyString_FromString(version.asString().c_str());
+  PyObject *pyxbmcapiversion = PyUnicode_FromString(version.asString().c_str());
   PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
 
   PyObject *pyinvokerid = PyLong_FromLong(GetId());
@@ -610,11 +633,6 @@ void CPythonInvoker::onError(const std::string &exceptionType /* = "" */, const 
   }
 }
 
-const char* CPythonInvoker::getInitializationScript() const
-{
-  return NULL;
-}
-
 void CPythonInvoker::initializeModules(const std::map<std::string, PythonModuleInitialization> &modules)
 {
   for (std::map<std::string, PythonModuleInitialization>::const_iterator module = modules.begin(); module != modules.end(); ++module)
@@ -629,8 +647,8 @@ bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
   if (module == NULL)
     return false;
 
-  module();
-  return true;
+  return module() != nullptr;
+
 }
 
 void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths)

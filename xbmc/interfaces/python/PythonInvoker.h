@@ -1,7 +1,7 @@
 #pragma once
 /*
  *      Copyright (C) 2013 Team XBMC
- *      http://xbmc.org
+ *      http://www.kodi.tv
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, see
+ *  along with Kodi; see the file COPYING.  If not, see
  *  <http://www.gnu.org/licenses/>.
  *
  */
@@ -27,6 +27,8 @@
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
 
+typedef struct _object PyObject;
+
 class CPythonInvoker : public ILanguageInvoker
 {
 public:
@@ -37,8 +39,8 @@ public:
 
   bool IsStopping() const override { return m_stop || ILanguageInvoker::IsStopping(); }
 
-  typedef void (*PythonModuleInitialization)();
-  
+  typedef PyObject* (*PythonModuleInitialization)();
+
 protected:
   // implementation of ILanguageInvoker
   bool execute(const std::string &script, const std::vector<std::string> &arguments) override;
@@ -47,8 +49,8 @@ protected:
   void onExecutionFailed() override;
 
   // custom virtual methods
-  virtual std::map<std::string, PythonModuleInitialization> getModules() const;
-  virtual const char* getInitializationScript() const;
+  virtual std::map<std::string, PythonModuleInitialization> getModules() const = 0;
+  virtual const char* getInitializationScript() const = 0;
   virtual void onInitialization();
   // actually a PyObject* but don't wanna draw Python.h include into the header
   virtual void onPythonModuleInitialization(void* moduleDict);
@@ -67,6 +69,7 @@ private:
   void addPath(const std::string& path); // add path in UTF-8 encoding
   void addNativePath(const std::string& path); // add path in system/Python encoding
   void getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths);
+  bool execute(const std::string &script, const std::vector<std::wstring> &arguments);
 
   std::string m_pythonPath;
   void *m_threadState;
