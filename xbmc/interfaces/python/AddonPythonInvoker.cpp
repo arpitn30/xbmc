@@ -105,7 +105,13 @@ static PythonModule PythonModules[] =
 
 CAddonPythonInvoker::CAddonPythonInvoker(ILanguageInvocationHandler *invocationHandler)
   : CPythonInvoker(invocationHandler)
-{ }
+{
+    PyImport_AppendInittab("xbmcgui",    PyInit_Module_xbmcgui);
+    PyImport_AppendInittab("xbmc",       PyInit_Module_xbmc);
+    PyImport_AppendInittab("xbmcplugin", PyInit_Module_xbmcplugin);
+    PyImport_AppendInittab("xbmcaddon",  PyInit_Module_xbmcaddon);
+    PyImport_AppendInittab("xbmcvfs",    PyInit_Module_xbmcvfs);
+}
 
 CAddonPythonInvoker::~CAddonPythonInvoker() = default;
 
