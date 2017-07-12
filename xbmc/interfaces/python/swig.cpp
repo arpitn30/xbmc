@@ -63,18 +63,14 @@ namespace PythonBindings
       // Python unicode objects are UCS2 or UCS4 depending on compilation
       // options, wchar_t is 16-bit or 32-bit depending on platform.
       // Avoid the complexity by just letting python convert the string.
-      PyObject *utf8_pyString = PyUnicode_AsUTF8String(pObject);
 
-      if (utf8_pyString)
-      {
-        buf = PyUnicode_AsUTF8(utf8_pyString);
-        Py_DECREF(utf8_pyString);
-        return;
-      }
-    }
-    else    // If pobject is of type Bytes
-    {
       buf = PyUnicode_AsUTF8(pObject);
+      return;
+    }
+
+    if (PyBytes_Check(pObject))    // If pobject is of type Bytes
+    {
+      buf = PyBytes_AsString(pObject);
       return;
     }
 
