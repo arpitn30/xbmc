@@ -101,7 +101,10 @@ static PythonModule PythonModules[] =
 CHTTPPythonWsgiInvoker::CHTTPPythonWsgiInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request)
   : CHTTPPythonInvoker(invocationHandler, request),
     m_wsgiResponse(NULL)
-{ }
+{
+    PyImport_AppendInittab("xbmc",     PyInit_Module_xbmc);
+    PyImport_AppendInittab("xbmcwsgi", PyInit_Module_xbmcwsgi);
+}
 
 CHTTPPythonWsgiInvoker::~CHTTPPythonWsgiInvoker()
 {
