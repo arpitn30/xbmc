@@ -36,7 +36,6 @@ public:
   ~CPythonInvoker() override;
 
   bool Execute(const std::string &script, const std::vector<std::string> &arguments = std::vector<std::string>()) override;
-
   bool IsStopping() const override { return m_stop || ILanguageInvoker::IsStopping(); }
 
   typedef PyObject* (*PythonModuleInitialization)();
