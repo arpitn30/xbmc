@@ -4,7 +4,7 @@ DEPS= ../../Makefile.include Makefile Python-2.7.12-crosscompile.patch Python-2.
 
 # lib name, version
 LIBNAME=Python
-VERSION=2.7.13
+VERSION=3.6.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 
@@ -20,9 +20,9 @@ endif
 CONFIGURE=OPT="$(CFLAGS)" \
   LIBS=-lm \
   ./configure --prefix=$(PREFIX) --host=$(HOST) \
-  --disable-toolbox-glue --disable-framework --with-system-ffi --without-pymalloc --enable-ipv6 
+  --disable-toolbox-glue --disable-framework --with-system-ffi --without-pymalloc --enable-ipv6
 
-LIBDYLIB=$(PLATFORM)/libpython2.7.a
+LIBDYLIB=$(PLATFORM)/libpython3.6m.a
 
 all: .installed-$(PLATFORM)
 
@@ -68,13 +68,13 @@ endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes libpython2.7.a
+	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes libpython3.6m.a
 	touch $@
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes install
-	find $(PREFIX)/lib/python2.7 -type f -name "*.py" -delete
-	find $(PREFIX)/lib/python2.7 -type f -name "*.pyc" -delete
+	find $(PREFIX)/lib/python3.6 -type f -name "*.py" -delete
+	find $(PREFIX)/lib/python3.6 -type f -name "*.pyc" -delete
 	touch $(LIBDYLIB)
 	touch $@
 
