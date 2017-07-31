@@ -95,15 +95,9 @@ libpng: $(ZLIB)
 openssl: $(ZLIB)
 gnutls: nettle $(ZLIB)
 nettle: gmp
-<<<<<<< HEAD
-pythonmodule-pycryptodome: $(PYMODULE_DEPS) python27 pythonmodule-setuptools
-pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python27 pythonmodule-setuptools
-pythonmodule-setuptools: $(PYMODULE_DEPS) python27
-=======
-pythonmodule-pycryptodome: python36 pythonmodule-setuptools
-pythonmodule-pil: $(ZLIB) libjpeg-turbo libpng freetype2 python36 pythonmodule-setuptools
-pythonmodule-setuptools: python36
->>>>>>> Changed Tools/Depends MakeFiles
+pythonmodule-pycryptodome: $(PYMODULE_DEPS) python36 pythonmodule-setuptools
+pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python36 pythonmodule-setuptools
+pythonmodule-setuptools: $(PYMODULE_DEPS) python36
 libxslt: libgcrypt libxml2
 ffmpeg: $(ICONV) $(ZLIB) bzip2 $(FFMPEG_DEPENDS)
 platform: p8-platform
