@@ -1,6 +1,6 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile Python-2.7.12-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
-       Python-setup.patch fix-datetime.patch fix-ffi.patch python-android-binmodule.patch Python-no-abort.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
+DEPS= ../../Makefile.include Makefile Python-3.6.2-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
+       Python-setup.patch fix-datetime.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
 
 # lib name, version
 LIBNAME=Python
@@ -33,6 +33,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	echo $(NATIVEPREFIX)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p0 < ../Python-3.6.2-crosscompile.patch
 	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
 ifeq ($(OS),ios)
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
