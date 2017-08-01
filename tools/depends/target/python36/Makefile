@@ -22,7 +22,7 @@ CONFIGURE=OPT="$(CFLAGS)" \
   ./configure --prefix=$(PREFIX) --host=$(HOST) \
   --disable-toolbox-glue --disable-framework --with-system-ffi --without-pymalloc --enable-ipv6
 
-LIBDYLIB=$(PLATFORM)/libpython3.6m.a
+LIBDYLIB=$(PLATFORM)/libpython3.6.a
 
 all: .installed-$(PLATFORM)
 
@@ -33,17 +33,8 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	echo $(NATIVEPREFIX)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); patch -p1 < ../Python-2.7.12-crosscompile.patch
-	cd $(PLATFORM); patch -p0 < ../Python-setup.patch
 	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
-	cd $(PLATFORM); patch -p0 < ../Python-2.7.10-android.patch
-	cd $(PLATFORM); patch -p0 < ../Python-no-export-path.patch
-	cd $(PLATFORM); patch -p0 < ../fix-ffi.patch
-	cd $(PLATFORM); patch -l -p0 < ../python-android-binmodule.patch
-	cd $(PLATFORM); patch -p1 < ../Python-no-abort.patch
 ifeq ($(OS),ios)
-	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
-	cd $(PLATFORM); patch -p0 < ../Python-2.6.5-urllib.diff
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup.dist
@@ -68,11 +59,11 @@ endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes libpython3.6m.a
+	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python3 NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes libpython3.6.a
 	touch $@
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes install
+	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python3 NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes install
 	find $(PREFIX)/lib/python3.6 -type f -name "*.py" -delete
 	find $(PREFIX)/lib/python3.6 -type f -name "*.pyc" -delete
 	touch $(LIBDYLIB)
