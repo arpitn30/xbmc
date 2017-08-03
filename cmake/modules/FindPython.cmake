@@ -6,10 +6,10 @@
 # PYTHON_LIBRARIES - The python libraries
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_PYTHON python>=3.6 QUIET)
+  pkg_check_modules(PC_PYTHON python3>=3.6 QUIET)
 endif()
 
-find_program(PYTHON_EXECUTABLE python ONLY_CMAKE_FIND_ROOT_PATH)
+find_program(PYTHON_EXECUTABLE python3 ONLY_CMAKE_FIND_ROOT_PATH)
 find_library(PYTHON_LIBRARY NAMES python3.6 PATHS ${PC_PYTHON_LIBDIR})
 find_path(PYTHON_INCLUDE_DIR NAMES Python.h PATHS ${PC_PYTHON_INCLUDE_DIRS} ${DEPENDS_PATH}/${ARCH}/include/python3.6)
 
