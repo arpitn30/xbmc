@@ -475,7 +475,7 @@ void XBPython::Finalize()
 #endif
 #if defined(TARGET_POSIX) && !defined(TARGET_DARWIN) && !defined(TARGET_FREEBSD)
     // we can't release it on windows, as this is done in UnloadPythonDlls() for win32 (see above).
-    // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python26.dll"
+    // The implementation for linux needs looking at - UnloadPythonDlls() currently only searches for "python36.dll"
     // The implementation for osx can never unload the python dylib.
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif
@@ -571,8 +571,8 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker *invoker)
     // check if we are running as real xbmc.app or just binary
     if (!CUtil::GetFrameworksPath(true).empty())
     {
-      // using external python, it's build looking for xxx/lib/python2.6
-      // so point it to frameworks which is where python2.6 is located
+      // using external python, it's build looking for xxx/lib/python3.6
+      // so point it to frameworks which is where python3.6 is located
       setenv("PYTHONHOME", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       setenv("PYTHONPATH", CSpecialProtocol::TranslatePath("special://frameworks").c_str(), 1);
       CLog::Log(LOGDEBUG, "PYTHONHOME -> %s", CSpecialProtocol::TranslatePath("special://frameworks").c_str());
