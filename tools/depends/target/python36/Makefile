@@ -20,7 +20,7 @@ endif
 CONFIGURE=OPT="$(CFLAGS)" \
   LIBS=-lm \
   ./configure --prefix=$(PREFIX) --host=$(HOST) \
-  --disable-toolbox-glue --disable-framework --with-system-ffi --without-pymalloc --enable-ipv6
+  --disable-framework --with-system-ffi --without-pymalloc --enable-ipv6
 
 LIBDYLIB=$(PLATFORM)/libpython3.6.a
 
