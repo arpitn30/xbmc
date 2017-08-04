@@ -10,7 +10,7 @@ ARCHIVE=$(SOURCE).tar.xz
 CWD=$(shell pwd)
 HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
 
-CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-toolbox-glue --disable-framework
+CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-pymalloc
 
 LIBDYLIB=$(PLATFORM)/python
 
