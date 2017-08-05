@@ -7,6 +7,7 @@ LIBNAME=binutils
 VERSION=2.29
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
+BASE_URL=https://ftp.gnu.org/gnu/binutils
 
 CONFIGURE=./configure --prefix=$(NATIVEPREFIX)
 
