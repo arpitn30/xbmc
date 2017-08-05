@@ -1,8 +1,8 @@
 --- Modules/posixmodule.c.orig	2015-12-12 17:13:12.000000000 +0100
 +++ Modules/posixmodule.c	2015-12-12 17:13:47.000000000 +0100
-@@ -162,6 +162,12 @@
- #endif  /* ! __WATCOMC__ || __QNX__ */
- #endif /* ! __IBMC__ */
+@@ -202,6 +202,12 @@
+ [clinic start generated code]*/
+ /*[clinic end generated code: output=da39a3ee5e6b4b0d input=94a0f0f978acae17]*/
  
 +
 +#undef HAVE_FORK

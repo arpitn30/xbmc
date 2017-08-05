@@ -1,6 +1,6 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile Python-3.6.2-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
-       Python-setup.patch fix-datetime.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
+       Python-setup.patch fix-datetime.patch apple.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
 
 # lib name, version
 LIBNAME=Python
@@ -10,10 +10,12 @@ ARCHIVE=$(SOURCE).tar.xz
 
 ifeq ($(OS),osx)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
+  export READELF=$(NATIVEPREFIX)/bin/readelf
 endif
 ifeq ($(OS),ios)
   HOSTPLATFORM=_PYTHON_HOST_PLATFORM="darwin"
   LINK_ICONV=-framework CoreFoundation -liconv
+  export READELF=$(NATIVEPREFIX)/bin/readelf
 endif
 
 # configuration settings
@@ -35,16 +37,18 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../Python-3.6.2-crosscompile.patch
 	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
+	cd $(PLATFORM); patch -p1 -i ../apple.patch
 ifeq ($(OS),ios)
+	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
 
 #Add -liconv as needed, and add the _scproxy module for darwin
 #  disable locale altogether for Android
 ifeq ($(OS),android)
-	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|#_locale _localemodule.c   -lintl|' Modules/Setup.dist
+	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c  # -lintl|#_locale _localemodule.c  # -lintl|' Modules/Setup.dist
 else
-	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) |' Modules/Setup.dist
+	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c  # -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) |' Modules/Setup.dist
 endif
 ifeq ($(OS),osx)
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
