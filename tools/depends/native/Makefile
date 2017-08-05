@@ -14,11 +14,11 @@ NATIVE= m4-native gettext-native autoconf-native automake-native \
 
 
 ifeq ($(OS),ios)
-  NATIVE += dpkg-native xz-native tar-native fakeroot-native gen_entitlements-native ldid-native
+  NATIVE += binutils-native dpkg-native xz-native tar-native fakeroot-native gen_entitlements-native ldid-native
 endif
 
 ifeq ($(OS),osx)
-  NATIVE += xz-native tar-native
+  NATIVE += binutils-native xz-native tar-native
 endif
 
 .PHONY: $(NATIVE) native
