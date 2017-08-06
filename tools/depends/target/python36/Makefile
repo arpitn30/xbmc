@@ -1,5 +1,5 @@
 include ../../Makefile.include
-DEPS= ../../Makefile.include Makefile Python-3.6.2-crosscompile.patch Python-2.7.10-android.patch Python-no-export-path.patch \
+DEPS= ../../Makefile.include Makefile Python-3.6.2-crosscompile.patch Python-3.6.2-android.patch \
        Python-setup.patch fix-datetime.patch apple.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
 
 # lib name, version
