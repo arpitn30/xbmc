@@ -1,15 +1,12 @@
---- Modules/posixmodule.c.orig	2015-12-12 17:13:12.000000000 +0100
-+++ Modules/posixmodule.c	2015-12-12 17:13:47.000000000 +0100
-@@ -202,6 +202,12 @@
- [clinic start generated code]*/
- /*[clinic end generated code: output=da39a3ee5e6b4b0d input=94a0f0f978acae17]*/
+--- Modules/posixmodule.c.orig	2017-08-06 15:18:11.634696238 +0530
++++ Modules/posixmodule.c	2017-08-06 20:20:07.016010000 +0530
+@@ -195,6 +195,9 @@
+ #endif  /* _MSC_VER */
+ #endif  /* ! __WATCOMC__ || __QNX__ */
  
-+
 +#undef HAVE_FORK
 +#undef HAVE_EXECV
 +#undef HAVE_SYSTEM
-+
-+
- #ifndef _MSC_VER
  
- #if defined(__sgi)&&_COMPILER_VERSION>=700
+ /*[clinic input]
+ # one of the few times we lie about this name!
