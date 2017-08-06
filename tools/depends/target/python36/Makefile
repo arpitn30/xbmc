@@ -37,6 +37,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p0 < ../Python-3.6.2-crosscompile.patch
 	cd $(PLATFORM); patch -p0 < ../fix-datetime.patch
+	cd $(PLATFORM); patch -p0 < ../Python-3.6.2-android.patch
 	cd $(PLATFORM); patch -p1 -i ../apple.patch
 ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
