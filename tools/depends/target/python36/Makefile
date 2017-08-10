@@ -18,6 +18,10 @@ ifeq ($(OS),ios)
   export READELF=$(NATIVEPREFIX)/bin/readelf
 endif
 
+ifeq ($(TARGET_PLATFORM),raspberry-pi)
+  export READELF=$(NATIVEPREFIX)/bin/readelf
+endif
+
 # configuration settings
 CONFIGURE=OPT="$(CFLAGS)" \
   LIBS=-lm \

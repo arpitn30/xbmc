@@ -21,6 +21,10 @@ ifeq ($(OS),osx)
   NATIVE += binutils-native xz-native tar-native
 endif
 
+ifeq ($(TARGET_PLATFORM),raspberry-pi)
+  NATIVE += binutils-native
+endif
+
 .PHONY: $(NATIVE) native
 
 all: native
