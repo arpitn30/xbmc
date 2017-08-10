@@ -5,7 +5,7 @@ DEPS= ../../Makefile.include.in Makefile
 
 # lib name, version
 LIBNAME=distribute
-VERSION=0.6.21
+VERSION=0.6.49
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 
 all: .installed-$(PLATFORM)

@@ -25,6 +25,10 @@ ifeq ($(ENABLE_WAYLAND),yes)
   NATIVE += expat-native wayland-scanner-native scons-native
 endif
 
+ifeq ($(TARGET_PLATFORM),raspberry-pi)
+  NATIVE += binutils-native
+endif
+
 .PHONY: $(NATIVE) native
 
 all: native
