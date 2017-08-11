@@ -74,7 +74,7 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python3 NATIVE_PGEN=$(NATIVEPREFIX)/bin/pgen CROSS_COMPILE_TARGET=yes install
-	find $(PREFIX)/lib/python3.6 -type f -name "*.py" -delete
+	# find $(PREFIX)/lib/python3.6 -type f -name "*.py" -delete
 	find $(PREFIX)/lib/python3.6 -type f -name "*.pyc" -delete
 	touch $(LIBDYLIB)
 	touch $@
