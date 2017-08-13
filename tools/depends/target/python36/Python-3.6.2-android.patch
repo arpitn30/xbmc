@@ -9,7 +9,6 @@
      SETS(setIndex++, p->pw_gecos);
  #else
      SETS(setIndex++, "");
-     
 
 --- Modules/termios.c.orig	2017-08-06 15:17:42.822696238 +0530
 +++ Modules/termios.c	2017-08-06 15:37:30.242696238 +0530
@@ -40,3 +39,15 @@
      {"tcflush", termios_tcflush,
       METH_VARARGS, termios_tcflush__doc__},
      {"tcflow", termios_tcflow,
+
+--- Modules/posixmodule.c
++++ Modules/posixmodule.c
+@@ -1932,7 +1932,7 @@
+         return NULL;
+ 
+     PyStructSequence_SET_ITEM(v, 0, PyLong_FromLong((long)st->st_mode));
+-#if defined(HAVE_LARGEFILE_SUPPORT) || defined(MS_WINDOWS)
++#if defined(HAVE_LARGEFILE_SUPPORT) || defined(MS_WINDOWS) || defined(ANDROID)
+     Py_BUILD_ASSERT(sizeof(unsigned long long) >= sizeof(st->st_ino));
+     PyStructSequence_SET_ITEM(v, 1,
+                               PyLong_FromUnsignedLongLong(st->st_ino));
