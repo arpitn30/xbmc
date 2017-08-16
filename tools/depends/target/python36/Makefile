@@ -1,6 +1,6 @@
 include ../../Makefile.include
 DEPS= ../../Makefile.include Makefile Python-3.6.2-crosscompile.patch Python-3.6.2-android.patch \
-       Python-setup.patch fix-datetime.patch apple.patch Python-2.6.5-urllib.diff modules.setup make-fork-optional.patch
+       fix-datetime.patch apple.patch modules.setup make-fork-optional.patch
 
 # lib name, version
 LIBNAME=Python
@@ -48,6 +48,7 @@ ifeq ($(OS),ios)
 	cd $(PLATFORM); patch -p0 < ../make-fork-optional.patch
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
 endif
+	cp modules.setup $(PLATFORM)/Modules/Setup.dist
 
 #Add -liconv as needed, and add the _scproxy module for darwin
 #  disable locale altogether for Android
