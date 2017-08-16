@@ -65,7 +65,7 @@
 # platform should be present.  The distribution comes with all modules
 # enabled that are supported by most platforms and don't require you
 # to ftp sources from elsewhere.
-
+*static*
 
 # Some special rules to define PYTHONPATH.
 # Edit the definitions below to indicate which options you are using.
@@ -85,13 +85,13 @@ MACHDESTLIB=$(BINLIBDEST)
 DESTPATH=
 
 # Site specific path components -- should begin with : if non-empty
-SITEPATH=
+SITEPATH=:site-packages 
 
 # Standard path components for test modules
 TESTPATH=
 
 # Path components for machine- or system-dependent modules and shared libraries
-MACHDEPPATH=:$(PLATDIR)
+MACHDEPPATH=:plat-$(MACHDEP)
 EXTRAMACHDEPPATH=
 
 COREPYTHONPATH=$(DESTPATH)$(SITEPATH)$(TESTPATH)$(MACHDEPPATH)$(EXTRAMACHDEPPATH)
@@ -394,3 +394,14 @@ _codecs_tw cjkcodecs/_codecs_tw.c
 
 # Another example -- the 'xxsubtype' module shows C-level subtyping in action
 xxsubtype xxsubtype.c
+
+SQLITEDEFINES='-DMODULE_NAME="sqlite3"'
+_sqlite3 _sqlite/connection.c  \
+	_sqlite/cursor.c _sqlite/microprotocols.c _sqlite/prepare_protocol.c \
+	_sqlite/row.c _sqlite/statement.c _sqlite/module.c _sqlite/util.c _sqlite/cache.c \
+	-I$(prefix)/include -L$(prefix)/lib -lsqlite3 $(SQLITEDEFINES)
+
+_ctypes _ctypes/callbacks.c  _ctypes/callproc.c  _ctypes/cfield.c  _ctypes/_ctypes.c  \
+        _ctypes/malloc_closure.c  _ctypes/stgdict.c \
+        -I$(prefix)/include/ffi -L$(prefix)/lib -lffi
+
