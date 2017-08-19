@@ -53,9 +53,9 @@ endif
 #Add -liconv as needed, and add the _scproxy module for darwin
 #  disable locale altogether for Android
 ifeq ($(OS),android)
-	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c  # -lintl|#_locale _localemodule.c  # -lintl|' Modules/Setup.dist
+	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|#_locale _localemodule.c   -lintl|' Modules/Setup.dist
 else
-	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c  # -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) |' Modules/Setup.dist
+	cd $(PLATFORM); sed -ie 's|_locale _localemodule.c   -lintl|_locale _localemodule.c   -lintl $(LINK_ICONV) |' Modules/Setup.dist
 endif
 ifeq ($(OS),osx)
 	cd $(PLATFORM); sed -ie 's|MACHDEP="unknown"|MACHDEP="darwin"|' configure.ac
