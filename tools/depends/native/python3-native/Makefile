@@ -4,14 +4,18 @@ DEPS= ../../Makefile.include Makefile
 
 # lib name, version
 LIBNAME=Python
-VERSION=3.6.4
+VERSION=3.7.2
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
+CWD=$(shell pwd)
+HOSTPYTHONDIR=$(CWD)/$(PLATFORM)/hostpython
+BASE_URL=https://www.python.org/ftp/python/$(VERSION)
 
-CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-ensurepip --without-pymalloc
+CONFIGURE=./configure --prefix=$(NATIVEPREFIX) --disable-shared --disable-framework --without-pymalloc
 ifeq ($(TARGET_PLATFORM),wayland)
   CONFIGURE += --with-system-expat
 endif
+
 
 LIBDYLIB=$(PLATFORM)/python
 ifeq ($(NATIVE_OS), osx)
@@ -29,10 +33,12 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE) $(DEPS)
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
+	cd $(PLATFORM); $(MAKE) regen-grammar
 	cd $(PLATFORM); $(MAKE)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	cd $(PLATFORM); $(MAKE) install
+	install $(PLATFORM)/Parser/pgen $(NATIVEPREFIX)/bin
 	touch $(LIBDYLIB)
 	touch $@
 

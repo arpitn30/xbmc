@@ -91,7 +91,7 @@ public:
   bool OnScriptInitialized(ILanguageInvoker *invoker) override;
   void OnScriptStarted(ILanguageInvoker *invoker) override;
   void OnScriptAbortRequested(ILanguageInvoker *invoker) override;
-  void OnExecutionEnded(ILanguageInvoker *invoker) override;
+  void OnScriptEnded(ILanguageInvoker *invoker) override;
   void OnScriptFinalized(ILanguageInvoker *invoker) override;
   ILanguageInvoker* CreateInvoker() override;
 
@@ -105,8 +105,6 @@ private:
   void Finalize();
 
   CCriticalSection    m_critSection;
-  bool              FileExist(const char* strFile);
-
   void*             m_mainThreadState;
   ThreadIdentifier  m_ThreadId;
   bool              m_bInitialized;
